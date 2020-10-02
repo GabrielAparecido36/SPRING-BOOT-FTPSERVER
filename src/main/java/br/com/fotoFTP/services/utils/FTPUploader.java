@@ -14,12 +14,15 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 import org.springframework.web.multipart.MultipartFile;
 
+import br.com.fotoFTP.entities.Fotos;
+
 public class FTPUploader extends FTP {
 
-	public List<String> Upar(MultipartFile [] fl) throws IOException, URISyntaxException {
+	public Fotos Upar(MultipartFile [] fl) throws IOException, URISyntaxException {
 		
 		List<File> files = new ArrayList<>();
 		List<String> urlFotos = new ArrayList<>();
+		Fotos fotos = new Fotos();
 		
 		for(int i = 0; i < fl.length; i++) {
 			File file = new File(fl[i].getOriginalFilename());
@@ -48,9 +51,16 @@ public class FTPUploader extends FTP {
 				ftp.storeFile(files.get(i).getName(), inputStream);
 				inputStream.close();
 				urlFotos.add("img/" + files.get(i).getName());
+				if(i == 0) {
+					fotos.getUrlFoto().add("img/" + files.get(i).getName());
+				}else if(i == 1) {
+					fotos.getUrlFoto().add("img/" + files.get(i).getName());
+				}else if(i == 2) {
+					fotos.getUrlFoto().add("img/" + files.get(i).getName());
+				}
 			}
 			ftp.logout();
-			return urlFotos;
+			return fotos;
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
