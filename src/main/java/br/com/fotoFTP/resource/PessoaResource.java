@@ -1,6 +1,7 @@
 package br.com.fotoFTP.resource;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import br.com.fotoFTP.dependencies.FTPUploader;
 import br.com.fotoFTP.entities.Pessoa;
 import br.com.fotoFTP.services.PessoaService;
+import br.com.fotoFTP.services.utils.FTPUploader;
 
 @RestController
 @RequestMapping(value = "/pessoas")
@@ -28,13 +29,15 @@ public class PessoaResource {
 		return ResponseEntity.ok().body(pessoaService.findAll());
 	}
 	
-	@PostMapping	
-	public String insert(@RequestParam(name="file") MultipartFile file) throws IOException{
+	@PostMapping()
+	public ResponseEntity<List<String>> insert(@RequestParam(name="file") MultipartFile[] file) throws IOException, URISyntaxException{
 	//public ResponseEntity<Pessoa> insert(@RequestBody Pessoa obj){
 	//public ResponseEntity<Pessoa> insert(@RequestBody Pessoa obj, @RequestParam(name="file") MultipartFile file) throws IOException{
 		FTPUploader ftp = new FTPUploader();
-		ftp.Upar(file);
-		return "Arquivo enviado com sucesso!";
+		
+		List<String> lista = ftp.Upar(file);
+		
+		return ResponseEntity.ok().body(lista);
 //		obj = pessoaService.insert(obj);
 //		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
 //		return ResponseEntity.created(uri).body(obj);
