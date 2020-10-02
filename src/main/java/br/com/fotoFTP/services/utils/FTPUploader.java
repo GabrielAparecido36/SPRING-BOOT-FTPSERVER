@@ -18,13 +18,13 @@ import br.com.fotoFTP.entities.Fotos;
 
 public class FTPUploader extends FTP {
 
-	public Fotos Upar(MultipartFile [] fl) throws IOException, URISyntaxException {
-		
+	public Fotos Upar(MultipartFile[] fl) throws IOException, URISyntaxException {
+
 		List<File> files = new ArrayList<>();
 		List<String> urlFotos = new ArrayList<>();
 		Fotos fotos = new Fotos();
-		
-		for(int i = 0; i < fl.length; i++) {
+
+		for (int i = 0; i < fl.length; i++) {
 			File file = new File(fl[i].getOriginalFilename());
 			file.createNewFile();
 			FileOutputStream fos = new FileOutputStream(file);
@@ -32,7 +32,6 @@ public class FTPUploader extends FTP {
 			fos.close();
 			files.add(file);
 		}
-
 
 		FTPClient ftp = new FTPClient();
 		try {
@@ -46,18 +45,13 @@ public class FTPUploader extends FTP {
 				ftp.disconnect();
 			}
 			ftp.setFileType(FTP.BINARY_FILE_TYPE);
-			for(int i = 0; i < files.size(); i++) {
+			for (int i = 0; i < files.size(); i++) {
 				InputStream inputStream = new FileInputStream(files.get(i));
 				ftp.storeFile(files.get(i).getName(), inputStream);
 				inputStream.close();
 				urlFotos.add("img/" + files.get(i).getName());
-				if(i == 0) {
-					fotos.getUrlFoto().add("img/" + files.get(i).getName());
-				}else if(i == 1) {
-					fotos.getUrlFoto().add("img/" + files.get(i).getName());
-				}else if(i == 2) {
-					fotos.getUrlFoto().add("img/" + files.get(i).getName());
-				}
+				fotos.getUrlFoto().add("img/" + files.get(i).getName());
+
 			}
 			ftp.logout();
 			return fotos;
